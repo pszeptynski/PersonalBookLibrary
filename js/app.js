@@ -31,7 +31,31 @@ $(function () {
         }).fail(function () {
             console.log('Error');
         });
-
-
     });
+    
+    // event na kliknięcie na przycisku submit
+    $('#submitBtn').on('click', function (e) {
+        e.preventDefault(); // zablokuj domyślny submit
+        
+        var formData = $('form').serialize(); // wszystkie pola formularza i serializuj
+        console.log(formData);
+        $.ajax({
+            url: 'api/books.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'json'
+        }).done(function (result) {
+            console.log(result);
+            // tutaj info o dodaniu lub nie, ksiązki w divie #bookAdded
+//            $('#bookAdded').html('The book has been added to library.');
+            $('#bookAdded').html(result);
+        }).fail(function (error) {
+            console.log('Error: ' + error);
+        });
+        
+        
+    });
+    
+    
+    
 });
