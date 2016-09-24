@@ -42,12 +42,20 @@ class Book implements JsonSerializable {
         $this->description = $description;
     }
 
+//    public function create(mysqli $conn, $title, $author) {
     public function create(mysqli $conn) {
-        
+        // weź dane z books.php ( a tam z formularza)
+        $result = $conn->query("INSERT INTO books (title, author, description)
+                                   VALUES ('$this->title', '$this->author', '$this->description')");
+        if ($result == true) {
+            $this->id = $conn->insert_id;
+            return true;
+        }
+        return false;
     }
 
-    public function update(mysql $conn, $id) {
-        
+    public function update(mysqli $conn, $id, $title, $author) {
+        // weź dane z books.php
     }
 
     public static function loadFromDB(mysqli $conn, $id = null) {
@@ -64,10 +72,10 @@ class Book implements JsonSerializable {
                 $dbBook->title = $row['title'];
                 $dbBook->author = $row['author'];
                 $dbBook->description = $row['description'];
-                $booksList[] = json_encode($dbBook);   // klasa Book musi mieć zaimplementowany interface, bo inaczej nie możemy do json_encode przekazać obiektu klasy
+                $booksList[] = json_encode($dbBook); // klasa Book musi mieć zaimplementowany interface, bo inaczej nie możemy do json_encode przekazać obiektu klasy
             }
         }
-        
+
         return $booksList;
     }
 
