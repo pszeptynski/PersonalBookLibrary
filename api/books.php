@@ -27,25 +27,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 //    var_dump($_POST);
     // walidacja, chociaz formularz nie przepuści pustych pól
     if (isset($_POST['title']) &&
-        isset($_POST['author']) &&
-        $_POST['description'] !== '') {
+            isset($_POST['author']) &&
+            $_POST['description'] !== '') {
 //        echo 'dane ok'; // żadnych takich czystych tekstów, bo errory będą
         $title = $_POST['title'];
         $author = $_POST['author'];
         $description = $_POST['description'];
-        // odebrać dane ajaxem
         // stworzyć obiekt nowej książki
-        echo json_encode('Book "' . $title . '" by ' . $author . ' has been added to the library.');
-    } else {
-        echo json_encode('All fields need to be filled.');
+        $bookToAdd = new Book();
+        $bookToAdd->setAuthor($author);
+        $bookToAdd->setTitle($title);
+        $bookToAdd->setDescription($description);
+        if ($bookToAdd->create($conn) == true) {
+            echo json_encode('Book "' . $title . '" by ' . $author . ' has been added to the library.');
+        } else {
+            echo json_encode('An error has occured.');
+        }
     }
+    
     
 } elseif ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     parse_str(file_get_contents("php://input"), $put_vars);
     var_dump($put_vars);
-    
 } elseif ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
     parse_str(file_get_contents("php://input"), $del_vars);
     var_dump($del_vars);
 }
 
+    
