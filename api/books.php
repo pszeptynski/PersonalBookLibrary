@@ -50,9 +50,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     parse_str(file_get_contents("php://input"), $put_vars);
     var_dump($put_vars);
+    
 } elseif ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
     parse_str(file_get_contents("php://input"), $del_vars);
-    var_dump($del_vars);
+//    echo json_encode($del_vars['id']); // debug
+//        echo json_encode(Book::deleteFromDB($conn, $del_vars['id']));
+
+    if (isset($del_vars['id']) && intval($del_vars['id']) > 0) {
+        if (Book::deleteFromDB($conn, $del_vars['id']) == true) {
+            echo json_encode(true);
+        } else {
+            echo json_encode(false);
+        }
+    }
 }
 
     
