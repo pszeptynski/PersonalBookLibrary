@@ -80,7 +80,13 @@ class Book implements JsonSerializable {
     }
 
     public static function deleteFromDB(mysqli $conn, $id = null) {
-        
+        if (!is_null($id)) {
+            $result = $conn->query("DELETE FROM books WHERE id=$id");
+            if ($result == true) {
+                return true;
+            }
+            return false;
+        }
     }
 
     public function jsonSerialize() {
