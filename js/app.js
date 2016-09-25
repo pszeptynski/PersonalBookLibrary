@@ -10,7 +10,9 @@ $(function () {
             var book = JSON.parse(result[i]);  // every book is a JSON object stored in result array, so we get it and convert to JS object
 //            console.log('Parsed JSON: ' + book) //debug
 //            console.log(book) //debug
-            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3><div class="description"></div>');
+            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3>\n\
+                                                                  <div class="description"></div>\n\
+                                                                  <button class="delete" data-id="' + book.id + '">Delete from DB</button>');
             $('#bookList').append(bookDiv);
         }
     }).fail(function () {
@@ -20,24 +22,54 @@ $(function () {
     //zakładamy event na kliknięcie na tytule, który rozwinie opis ksiązki
     $('#bookList').on('click', $('.singleBook').find('h3'), function (e) {
         //jquery events on ajax load elements
-        var h3 = $(e.target);
-        var bookId = h3.attr('data-id');
+//        console.log(e.target.tagName);
+//        console.log(e.target.className);
 
-        $.ajax({
-            url: 'api/books.php',
-            type: 'GET',
-            data: 'id=' + bookId, // tutaj już z data, bo potrzebujemy książkę o konkretnym id
-            dataType: 'json'
-        }).done(function (result) {
-            console.log('From backend: ' + result); //debug, result is an array with one JSON object (a book from DB)
-            var book = JSON.parse(result[0]);
-            console.log(book); //debug, single book as an object, parsed result
-            h3.next('.description').html(book.description);  // wstaw opis książki do diva za elementem h3 z tytułem
-        }).fail(function () {
-            console.log('Error');
-        });
+        if (e.target.tagName == 'H3') {
+            var h3 = $(e.target);
+            var bookId = h3.attr('data-id');
+
+            $.ajax({
+                url: 'api/books.php',
+                type: 'GET',
+                data: 'id=' + bookId, // tutaj już z data, bo potrzebujemy książkę o konkretnym id
+                dataType: 'json'
+            }).done(function (result) {
+//            console.log('From backend: ' + result); //debug, result is an array with one JSON object (a book from DB)
+                var book = JSON.parse(result[0]);
+//            console.log(book); //debug, single book as an object, parsed result
+                h3.next('.description').html(book.description);  // wstaw opis książki do diva za elementem h3 z tytułem
+            }).fail(function () {
+                console.log('Error');
+            });
+        }
+
+        if (e.target.className == 'delete') {
+
+            var div = $(e.target);
+            var bookId = div.attr('data-id');
+
+            $.ajax({
+                url: 'api/books.php',
+                type: 'DELETE',
+                data: 'id=' + bookId,
+                dataType: 'json'
+            }).done(function (result) {
+                console.log('From backend: ' + result);
+                var removeElement = div.parent();
+                console.log(removeElement);
+                removeElement.remove();
+            }).fail(function (error) {
+                console.log('Error: ' + error.responseText);
+            });
+
+
+        }
+
+
+
     });
-    
+
     // event na kliknięcie na przycisku submit
 //    $('#submitBtn').on('click', function (e) {
     // event na formularzu, co daje szanse, żeby html wstępnie walidował wypełnienie pól
@@ -58,20 +90,24 @@ $(function () {
             $('#bookAdded').html('The book has been added to the library.');
             var book = JSON.parse(result);
             console.log(book); // debug, parsed json object
-            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3><div class="description"></div>');
+//            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3><div class="description"></div>');
+            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3>\n\
+                                                      <div class="description"></div>\n\
+                                                      <button class="delete" data-id="' + book.id + '">Delete from DB</button>');
+
             $('#bookList').append(bookDiv);
-            
-            
+
+
 //            window.setTimeout(function(){location.reload()},3000);
 //            $('#bookList').load(document.URL +  ' #bookList');
 //            $("#bookList").replaceWith($('#bookList', $(html)));
         }).fail(function (error) {
             console.log('Error: ' + error.responseText);
         });
-        
-        
+
+
     });
-    
-    
-    
+
+
+
 });
