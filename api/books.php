@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
 
     echo json_encode($books); // wypluj wynik (do app.js)
-    
 } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
 //    var_dump($_POST);
     // walidacja, chociaz formularz nie przepuści pustych pól
@@ -39,13 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $bookToAdd->setTitle($title);
         $bookToAdd->setDescription($description);
         if ($bookToAdd->create($conn) == true) {
-            echo json_encode('Book "' . $title . '" by ' . $author . ' has been added to the library.');
+            $bookToAdd->getId();  // if book added to db, get its id
+            echo json_encode([json_encode($bookToAdd)]);
+//            echo json_encode($bookToAdd); // return new book object
+//            echo json_encode('Book "' . $title . '" by ' . $author . ' has been added to the library.');
         } else {
+            // to inaczej jakoś rozwiązać
             echo json_encode('An error has occured.');
         }
     }
-    
-    
 } elseif ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     parse_str(file_get_contents("php://input"), $put_vars);
     var_dump($put_vars);
