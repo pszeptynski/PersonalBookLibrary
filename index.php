@@ -2,13 +2,14 @@
     <head>
         <title>Public Library</title>
         <meta charset="utf-8">
-        <script src="js/jquery-3.1.0.min.js"></script>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script type="text/JavaScript" src="./js/app.js"></script>
     </head>
     <body>
         <!--<form method="POST" action="#" >-->
         <form method="POST" action="api/books.php">
-            <fieldset style=" width: 40%">
+            <fieldset style=" width: 100%">
                 <legend>Add a new book to the library:</legend>
                 <label>Title:</label>
                 <input type="text" name="title" id="title" placeholder="Przygody młota Thora" required><br>
