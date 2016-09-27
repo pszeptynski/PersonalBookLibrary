@@ -1,0 +1,26 @@
+body {
+    width: 600px;
+    margin: auto;
+    text-align: center;
+}
+
+.hide { display: none;}
+
+input {
+    text-align: left;
+    /*border: 1px solid #4f4f4f;*/
+    /*padding: 20px;*/
+}
+
+label {
+    text-align: left;
+    padding: 10px;
+}
+
+fieldset {
+    background-color: lightgoldenrodyellow;
+}
+
+#bookAdded {
+    color: green;
+}
