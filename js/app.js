@@ -10,9 +10,10 @@ $(function () {
             var book = JSON.parse(result[i]);  // every book is a JSON object stored in result array, so we get it and convert to JS object
 //            console.log('Parsed JSON: ' + book) //debug
 //            console.log(book) //debug
-            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3>\n\
-                                                                  <div class="description"></div>\n\
-                                                                  <button class="delete" data-id="' + book.id + '">Delete from DB</button>');
+            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3>\
+                                                                  <div class="description"></div>\
+                                                                  <button class="delete" data-id="' + book.id + '">Delete from DB</button>\
+                                                                  <button class="update" data-id="' + book.id + '">Update</button>');
             $('#bookList').append(bookDiv);
         }
     }).fail(function () {
@@ -25,7 +26,7 @@ $(function () {
 //        console.log(e.target.tagName);
 //        console.log(e.target.className);
 
-        if (e.target.tagName == 'H3') {
+        if (e.target.tagName === 'H3') {
             var h3 = $(e.target);
             var bookId = h3.attr('data-id');
 
@@ -44,7 +45,7 @@ $(function () {
             });
         }
 
-        if (e.target.className == 'delete') {
+        if (e.target.className === 'delete') {
 
             var div = $(e.target);
             var bookId = div.attr('data-id');
@@ -62,10 +63,31 @@ $(function () {
             }).fail(function (error) {
                 console.log('Error: ' + error.responseText);
             });
-
-
         }
 
+        if (e.target.className === 'update') {
+
+            var div = $(e.target);
+            var bookId = div.attr('data-id');
+
+            $.ajax({
+                url: 'api/books.php',
+                type: 'PUT',
+                data: 'id=' + bookId,
+                dataType: 'json'
+            }).done(function (result) {
+                console.log('From backend: ' + result);
+                // Tutaj wymyślec jak obrabiac ten update
+                // nowy formularz gdzieś poniżej otworzyć, czy wrzucać na góre
+                // ale wtedy bez senus przewijanie z końca
+                // 
+//                var removeElement = div.parent();
+//                console.log(removeElement);
+//                removeElement.remove();
+            }).fail(function (error) {
+                console.log('Error: ' + error.responseText);
+            });
+        }
 
 
     });
@@ -91,11 +113,15 @@ $(function () {
             var book = JSON.parse(result);
             console.log(book); // debug, parsed json object
 //            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3><div class="description"></div>');
-            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3>\n\
-                                                      <div class="description"></div>\n\
-                                                      <button class="delete" data-id="' + book.id + '">Delete from DB</button>');
+            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3>\
+                                                      <div class="description"></div>\
+                                                      <button class="delete" data-id="' + book.id + '">Delete from DB</button>\
+                                                      <button class="update" data-id="' + book.id + '">Update</button>');
 
             $('#bookList').append(bookDiv);
+            // clear the input form for anotother book
+            $('input:not([type="submit"])').val('');
+            $('textarea#description').val('');
 
 
 //            window.setTimeout(function(){location.reload()},3000);
