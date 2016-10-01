@@ -11,9 +11,11 @@ $(function () {
 //            console.log('Parsed JSON: ' + book) //debug
 //            console.log(book) //debug
             var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3>\
+                                                                  <h5 data-id="' + book.id + '">' + book.author + '</h5>\
                                                                   <div class="description"></div>\
                                                                   <button class="delete" data-id="' + book.id + '">Delete from DB</button>\
-                                                                  <button class="update" data-id="' + book.id + '">Update</button>');
+                                                                  <button class="update" data-id="' + book.id + '">Update</button>\
+                                                                  <div id="updateForm" data-id="' + book.id + '"></div>');
             $('#bookList').append(bookDiv);
         }
     }).fail(function () {
@@ -21,12 +23,13 @@ $(function () {
     });
 
     //zakładamy event na kliknięcie na tytule, który rozwinie opis ksiązki
-    $('#bookList').on('click', $('.singleBook').find('h3'), function (e) {
+//    $('#bookList').on('click', $('.singleBook').find('h3'), function (e) {
+    $('#bookList').on('click', '.singleBook > h3', function (e) {
         //jquery events on ajax load elements
-//        console.log(e.target.tagName);
-//        console.log(e.target.className);
+        console.log(e.target);
+        console.log(e.target.tagName);
+        console.log(e.target.className);
 
-        if (e.target.tagName === 'H3') {
             var h3 = $(e.target);
             var bookId = h3.attr('data-id');
 
@@ -39,57 +42,121 @@ $(function () {
 //            console.log('From backend: ' + result); //debug, result is an array with one JSON object (a book from DB)
                 var book = JSON.parse(result[0]);
 //            console.log(book); //debug, single book as an object, parsed result
-                h3.next('.description').html(book.description);  // wstaw opis książki do diva za elementem h3 z tytułem
+                h3.next().next('.description').html(book.description);  // wstaw opis książki do diva za elementem h3 z tytułem
             }).fail(function () {
                 console.log('Error');
             });
-        }
+        });
 
-        if (e.target.className === 'delete') {
-
-            var div = $(e.target);
-            var bookId = div.attr('data-id');
-
-            $.ajax({
-                url: 'api/books.php',
-                type: 'DELETE',
-                data: 'id=' + bookId,
-                dataType: 'json'
-            }).done(function (result) {
-                console.log('From backend: ' + result);
-                var removeElement = div.parent();
-                console.log(removeElement);
-                removeElement.remove();
-            }).fail(function (error) {
-                console.log('Error: ' + error.responseText);
-            });
-        }
-
-        if (e.target.className === 'update') {
+    $('#bookList').on('click', '.singleBook > button.delete', function (e) {
 
             var div = $(e.target);
             var bookId = div.attr('data-id');
-
-            $.ajax({
-                url: 'api/books.php',
-                type: 'PUT',
-                data: 'id=' + bookId,
-                dataType: 'json'
-            }).done(function (result) {
-                console.log('From backend: ' + result);
-                // Tutaj wymyślec jak obrabiac ten update
-                // nowy formularz gdzieś poniżej otworzyć, czy wrzucać na góre
-                // ale wtedy bez senus przewijanie z końca
-                // 
+            console.log(div);
+            alert('DELETE');
+               // działa, na razie zakomentowane, żeby nic nei kasował
+//            $.ajax({
+//                url: 'api/books.php',
+//                type: 'DELETE',
+//                data: 'id=' + bookId,
+//                dataType: 'json'
+//            }).done(function (result) {
+//                console.log('From backend: ' + result);
 //                var removeElement = div.parent();
 //                console.log(removeElement);
 //                removeElement.remove();
-            }).fail(function (error) {
-                console.log('Error: ' + error.responseText);
+//            }).fail(function (error) {
+//                console.log('Error: ' + error.responseText);
+//            });
+//        }
+
+    });
+
+        $('#bookList').on('click', '.singleBook > button.update', function (e) {
+//
+            var div = $(e.target);
+            var bookId = div.attr('data-id');
+            console.log(div);
+//            alert('UPDATE');
+            // wczytaj książkę z bazy (cały obiekt)
+            $.ajax({
+                url: 'api/books.php',
+                type: 'GET',
+                data: 'id=' + bookId,
+                dataType: 'json'
+            }).done(function (result) {
+//            console.log('From backend: ' + result); //debug, result is an array with one JSON object (a book from DB)
+                var book = JSON.parse(result[0]);
+//            console.log(book); //debug, single book as an object, parsed result
+//                var divUpdateForm = $('div#updateForm > form');
+                var divUpdateForm = div.next('div#updateForm');
+                console.log(divUpdateForm);
+//                book.id
+//                data-id
+                divUpdateForm.html('<form>\n\
+                                    <label>Title:</label>\
+                                    <input type="text" name="title" id="updTitle"><br/>\
+                                    <label>Author:</label>\
+                                    <input type="text" name="author" id="updAuthor"><br/>\
+                                    <label>Description:</label>\
+                                    <textarea rows="3" cols="25" name="description" id="updDescription"<br/> \
+                                    <input type="submit" value="Confirm">\
+                                    </form>');
+                
+                divUpdateForm.append(divUpdateForm);
+
+                 
+                var form = divUpdateForm.find('form');
+                var title = form.find('input#updTitle');
+                var author = form.find('input#updAuthor');
+                var description = form.find('textarea#updDescription');
+                var submitBtn = form.find('input[type="submit"]');
+                // insert data to update into form
+                title.val(book.title);
+                author.val(book.author);
+                description.val(book.description);
+//                submitBtn.toggleClass('hide');
+
+                 form.on('click', 'input[type="submit"]', function (ev) {
+                     ev.preventDefault();
+                     alert('confirm');
+                     
+                     
+                     divUpdateForm.empty(); // empty() to keep event listeners
+                     
+                 });
+                
+                
+                // contenteditable w html sprawdzić
+                
+                
+            }).fail(function () {
+                console.log('Error');
             });
-        }
 
-
+            
+            
+//
+//            $.ajax({
+//                url: 'api/books.php',
+//                type: 'PUT',
+//                data: 'id=' + bookId,
+//                dataType: 'json'
+//            }).done(function (result) {
+//                console.log('From backend: ' + result);
+//                // Tutaj wymyślec jak obrabiac ten update
+//                // nowy formularz gdzieś poniżej otworzyć, czy wrzucać na góre
+//                // ale wtedy bez senus przewijanie z końca
+//                // 
+////                var removeElement = div.parent();
+////                console.log(removeElement);
+////                removeElement.remove();
+//            }).fail(function (error) {
+//                console.log('Error: ' + error.responseText);
+//            });
+//        }
+//
+//
     });
 
     // event na kliknięcie na przycisku submit
@@ -112,21 +179,18 @@ $(function () {
             $('#bookAdded').html('The book has been added to the library.');
             var book = JSON.parse(result);
             console.log(book); // debug, parsed json object
-//            var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3><div class="description"></div>');
             var bookDiv = $('<div>').addClass('singleBook').html('<h3 data-id="' + book.id + '">' + book.title + '</h3>\
                                                       <div class="description"></div>\
                                                       <button class="delete" data-id="' + book.id + '">Delete from DB</button>\
                                                       <button class="update" data-id="' + book.id + '">Update</button>');
 
             $('#bookList').append(bookDiv);
-            // clear the input form for anotother book
+            // clear the input form for another book
             $('input:not([type="submit"])').val('');
             $('textarea#description').val('');
 
 
 //            window.setTimeout(function(){location.reload()},3000);
-//            $('#bookList').load(document.URL +  ' #bookList');
-//            $("#bookList").replaceWith($('#bookList', $(html)));
         }).fail(function (error) {
             console.log('Error: ' + error.responseText);
         });
