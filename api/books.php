@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $author = $put_vars['author'];
     $description = $put_vars['description'];
     if (Book::update($conn, $id, $title, $author, $description) == true) {
-        echo json_encode(true);
+        echo json_encode([json_encode($put_vars)]);
     } else {
         echo json_encode(false);
     }
