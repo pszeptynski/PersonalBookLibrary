@@ -93,14 +93,14 @@ $(function () {
 //            console.log(book); //debug, single book as an object, parsed result
             var divUpdateForm = btn.next('div#updateForm');
             console.log(divUpdateForm);
-            divUpdateForm.html('<form>\
+            divUpdateForm.html('<br/><form>\
                                     <input type="hidden" name="id" value="' + bookId + '">\
                                     <label>Title:</label>\
                                     <input type="text" name="title" id="updTitle"><br/>\
                                     <label>Author:</label>\
                                     <input type="text" name="author" id="updAuthor"><br/>\
                                     <label>Description:</label>\
-                                    <textarea rows="3" cols="25" name="description" id="updDescription"<br/> \
+                                    <textarea rows="4" cols="40" name="description" id="updDescription"<br/> \
                                     <input type="submit" value="Confirm">\
                                     </form>');
 
