@@ -42,7 +42,6 @@ class Book implements JsonSerializable {
         $this->description = $description;
     }
 
-//    public function create(mysqli $conn, $title, $author) {
     public function create(mysqli $conn) {
         // weź dane z books.php ( a tam z formularza)
         $result = $conn->query("INSERT INTO books (title, author, description)
@@ -54,13 +53,20 @@ class Book implements JsonSerializable {
         return false;
     }
 
-    public function update(mysqli $conn, $id, $title, $author) {
-        // weź dane z books.php
+    public static function update(mysqli $conn, $id, $title, $author, $description) {
+        $result = $conn->query("UPDATE books SET title = '$title',
+                                                 author = '$author',
+                                                 description = '$description'
+                                WHERE id='$id' ");
+        if ($result == true) {
+            return true;
+        }
+        return false;
     }
 
     public static function loadFromDB(mysqli $conn, $id = null) {
         if (!is_null($id)) {
-            $result = $conn->query("SELECT * FROM books WHERE id='" . $id . "'");
+            $result = $conn->query("SELECT * FROM books WHERE id='$id'");
         } else {
             $result = $conn->query("SELECT * FROM books");
         }
