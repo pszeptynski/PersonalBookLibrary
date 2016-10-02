@@ -1,12 +1,13 @@
 <html>
     <head>
-        <title>Public Library</title>
+        <title>Personal Book Library</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="css/style.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script type="text/JavaScript" src="./js/app.js"></script>
     </head>
     <body>
+        <h1>Welcome to your personal book library.</h1>
         <form method="POST" action="api/books.php">
             <fieldset style=" width: 100%">
                 <legend>Add a new book to the library:</legend>
@@ -22,11 +23,10 @@
         <div id="bookAdded">
             <!-- info about book addition to db -->
         </div>
+        <p>Press the book title to show its description.</p>
         <div id="bookList">
             <!-- All books got from db appear here -->
         </div>
 
     </body>
-
-
 </html>
