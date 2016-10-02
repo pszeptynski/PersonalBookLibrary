@@ -32,7 +32,7 @@ $(function () {
         }).done(function (result) {
             var book = JSON.parse(result[0]);
             // insert description in its div
-            h3.next().next('.description').html(book.description);
+            h3.next().next('.description').html('<p>' + book.description + '</p>');
         }).fail(function () {
             console.log('Error: ' + error.responseText);
         });
