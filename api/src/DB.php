@@ -11,7 +11,7 @@ class DB {
             self::$conn = new mysqli('localhost', 'root', 'CodersLab', 'public_library_db');
             self::$conn->set_charset('utf8');
             if (self::$conn->connect_error) {
-                die('Nie udało sie połączyć: ' . self::$conn->connect_errno);
+                die('Connection error: ' . self::$conn->connect_errno);
             }
 
             return self::$conn;
